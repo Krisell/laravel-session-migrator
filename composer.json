@@ -1,0 +1,53 @@
+{
+  "name": "krisell/laravel-session-migrator",
+  "description": "Migrate Laravel session driver or serialization method without losing any sessions",
+  "keywords": [
+    "krisell",
+    "laravel-session-migrator"
+  ],
+  "homepage": "https://github.com/krisell/laravel-session-migrator",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Martin Krisell",
+      "email": "martin.krisell@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^8.0.2",
+    "illuminate/support": "^9.5"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^7.2",
+    "phpunit/phpunit": "^9.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Krisell\\LaravelSessionMigrator\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Krisell\\LaravelSessionMigrator\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit",
+    "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Krisell\\LaravelSessionMigrator\\LaravelSessionMigratorServiceProvider"
+      ],
+      "aliases": {
+        "LaravelSessionMigrator": "Krisell\\LaravelSessionMigrator\\LaravelSessionMigratorFacade"
+      }
+    }
+  }
+}
