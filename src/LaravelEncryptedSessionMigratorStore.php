@@ -19,7 +19,7 @@ class LaravelEncryptedSessionMigratorStore extends LaravelSessionMigratorStore
         $this->previousHandler = $previousHandler;
     }
 
-        /**
+    /**
      * Prepare the raw string data from the session for unserialization.
      *
      * @param  string  $data

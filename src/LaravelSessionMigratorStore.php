@@ -2,13 +2,13 @@
 
 namespace Krisell\LaravelSessionMigrator;
 
-use SessionHandlerInterface;
 use Illuminate\Session\Store;
+use SessionHandlerInterface;
 
 class LaravelSessionMigratorStore extends Store
 {
     protected $previousHandler;
-    
+
     public function __construct($name, SessionHandlerInterface $handler, $id = null, $serialization = 'php', $previousHandler = null)
     {
         parent::__construct($name, $handler, $id, $serialization);
@@ -30,13 +30,13 @@ class LaravelSessionMigratorStore extends Store
             }
         }
 
-        // Attempt to read session data using all candidate handlers and serializations and 
+        // Attempt to read session data using all candidate handlers and serializations and
         // return data on first successful read.
         foreach ($methods as [$handler, $serialization]) {
             if ($data = $handler->read($this->getId())) {
                 $prepared = $this->prepareForUnserialize($data);
                 $data = ($serialization === 'json') ? json_decode($prepared, true) : @unserialize($prepared);
-    
+
                 if ($data !== false && is_array($data)) {
                     return $data;
                 }

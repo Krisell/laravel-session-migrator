@@ -2,4 +2,4 @@
 vendor
 .phpunit.result.cache
 coverage
-
+.php-cs-fixer.cache

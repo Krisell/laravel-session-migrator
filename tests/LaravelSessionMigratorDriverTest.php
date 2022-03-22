@@ -2,13 +2,13 @@
 
 namespace Krisell\LarvelSessionMigrator\Tests;
 
-use Orchestra\Testbench\TestCase;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Encryption\Encrypter;
 use Illuminate\Cookie\CookieValuePrefix;
+use Illuminate\Encryption\Encrypter;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Krisell\LaravelSessionMigrator\LaravelSessionMigratorServiceProvider;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Orchestra\Testbench\TestCase;
 
 class LaravelSessionMigratorDriverTest extends TestCase
 {
@@ -22,11 +22,12 @@ class LaravelSessionMigratorDriverTest extends TestCase
         parent::setUp();
 
         config([
-            'app.key' => 'base64:'.base64_encode(Encrypter::generateKey('aes-256-cbc'))
+            'app.key' => 'base64:'.base64_encode(Encrypter::generateKey('aes-256-cbc')),
         ]);
     }
 
-    private function sessionData($data) {
+    private function sessionData($data)
+    {
         return json_encode([
             'data' => serialize($data),
             'expires' => time() + 100,
@@ -50,11 +51,11 @@ class LaravelSessionMigratorDriverTest extends TestCase
             'session.driver' => 'file',
             'session.migrate.driver' => 'cookie',
         ]);
-        
+
         Route::middleware('web')->get('/session', function () {
             $this->assertEquals('data', session('some'));
         });
-        
+
         // This sends session data as a cookie, but the app is set to read from the file driver
         $this->withCookies([
             'laravel_session' => ($name = Str::random(40)),
@@ -72,16 +73,16 @@ class LaravelSessionMigratorDriverTest extends TestCase
         session(['some' => 'data']);
         session()->driver()->save();
         $id = session()->getId();
-        
+
         config([
             'session.driver' => 'cookie',
             'session.migrate.driver' => 'file',
         ]);
-        
+
         Route::middleware('web')->get('/session', function () {
             $this->assertEquals('data', session('some'));
         });
-        
+
         $this->withCookies([
             'laravel_session' => $id,
         ])->get('/session')->assertOk();

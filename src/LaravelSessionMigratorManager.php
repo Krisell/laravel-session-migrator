@@ -2,12 +2,12 @@
 
 namespace Krisell\LaravelSessionMigrator;
 
+use Illuminate\Http\Request;
+use Illuminate\Session\CookieSessionHandler;
+use Illuminate\Session\DatabaseSessionHandler;
+use Illuminate\Session\FileSessionHandler;
 use Illuminate\Session\SessionManager;
 use Illuminate\Session\Store;
-use Illuminate\Session\FileSessionHandler;
-use Illuminate\Session\DatabaseSessionHandler;
-use Illuminate\Session\CookieSessionHandler;
-use Illuminate\Http\Request;
 
 class LaravelSessionMigratorManager extends SessionManager
 {
@@ -32,22 +32,24 @@ class LaravelSessionMigratorManager extends SessionManager
             : new LaravelSessionMigratorStore(...$arguments);
     }
 
-    private function getPreviousHandler() {
+    private function getPreviousHandler()
+    {
         $from = $this->config->get('session.migrate.driver');
 
         // If the driver to migrate from is not specified or same as used driver, return null which skips this handling
         if (! $from || $from === $this->config->get('session.driver')) {
             return null;
         }
-        
+
         $method = 'create'.ucfirst($from).'Handler';
+
         return method_exists($this, $method) ? $this->$method() : null;
     }
 
     private function createFileHandler()
     {
         return new FileSessionHandler(
-            $this->container->make('files'), 
+            $this->container->make('files'),
             $this->config->get('session.files'),
             $this->config->get('session.lifetime')
         );
@@ -57,7 +59,7 @@ class LaravelSessionMigratorManager extends SessionManager
     {
         return tap(
             new CookieSessionHandler(
-                $this->container->make('cookie'),  
+                $this->container->make('cookie'),
                 $this->config->get('session.lifetime')
             ),
             // This is only necessary for the CookieSessionHandler

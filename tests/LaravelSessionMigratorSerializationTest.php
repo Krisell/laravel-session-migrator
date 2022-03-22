@@ -2,12 +2,12 @@
 
 namespace Krisell\LarvelSessionMigrator\Tests;
 
-use Orchestra\Testbench\TestCase;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Encryption\Encrypter;
 use Illuminate\Cookie\CookieValuePrefix;
+use Illuminate\Encryption\Encrypter;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Krisell\LaravelSessionMigrator\LaravelSessionMigratorServiceProvider;
+use Orchestra\Testbench\TestCase;
 
 class LaravelSessionMigratorSerializationTest extends TestCase
 {
@@ -16,7 +16,8 @@ class LaravelSessionMigratorSerializationTest extends TestCase
         return [LaravelSessionMigratorServiceProvider::class];
     }
 
-    private function sessionData($data, $serialization) {
+    private function sessionData($data, $serialization)
+    {
         return json_encode([
             'data' => $serialization === 'php' ? serialize($data) : json_encode($data),
             'expires' => time() + 100,
@@ -29,7 +30,7 @@ class LaravelSessionMigratorSerializationTest extends TestCase
 
         config([
             'session.driver' => 'cookie',
-            'app.key' => 'base64:'.base64_encode(Encrypter::generateKey('aes-256-cbc'))
+            'app.key' => 'base64:'.base64_encode(Encrypter::generateKey('aes-256-cbc')),
         ]);
     }
 
@@ -102,8 +103,8 @@ class LaravelSessionMigratorSerializationTest extends TestCase
         $this->withCookies([
             'laravel_session' => ($name = Str::random(40)),
             $name => $this->sessionData(['json' => true], 'json'),
-        ])->get('/incorrect');     
-        
+        ])->get('/incorrect');
+
         $this->assertEquals('incorrect', session('performed'));
     }
 
@@ -132,8 +133,8 @@ class LaravelSessionMigratorSerializationTest extends TestCase
         $this->withCookies([
             'laravel_session' => ($name = Str::random(40)),
             $name => $this->sessionData(['php' => true], 'php'),
-        ])->get('/incorrect');     
-        
+        ])->get('/incorrect');
+
         $this->assertEquals('incorrect', session('performed'));
     }
 
