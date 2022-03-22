@@ -1,10 +1,10 @@
-# Very short description of the package
+# Laravel Session Migrator
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/krisell/laravel-session-migrator.svg?style=flat-square)](https://packagist.org/packages/krisell/laravel-session-migrator)
 [![Total Downloads](https://img.shields.io/packagist/dt/krisell/laravel-session-migrator.svg?style=flat-square)](https://packagist.org/packages/krisell/laravel-session-migrator)
 ![GitHub Actions](https://github.com/krisell/laravel-session-migrator/actions/workflows/main.yml/badge.svg)
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
+Migration Laravel session driver or serialization method in production without dropping any session.
 
 ## Installation
 
@@ -17,7 +17,7 @@ composer require krisell/laravel-session-migrator
 ## Usage
 
 ```php
-// Usage description here
+// TODO
 ```
 
 ### Testing
@@ -25,10 +25,6 @@ composer require krisell/laravel-session-migrator
 ```bash
 composer test
 ```
-
-### Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
 ## Contributing
 
@@ -40,8 +36,8 @@ If you discover any security related issues, please email martin.krisell@gmail.c
 
 ## Credits
 
--   [Martin Krisell](https://github.com/krisell)
--   [All Contributors](../../contributors)
+- [Martin Krisell](https://github.com/krisell)
+- [All Contributors](../../contributors)
 
 ## License
 
