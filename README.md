@@ -64,6 +64,9 @@ You only need this package during a short transition period where your applicati
 the old format. The length of this depends on your session lifetime. As an example, if your session expires after 2 hours,
 you only need to run this package in production for those two hours, although keeping it around longer does no harm. For performance reasons, you should certainly disable and preferable remove this package eventually after the transition has been completed.
 
+## Pre-production applications
+There is no reason to use this package in pre-production applications or local environments, execept of course for testing before using live. If dropping sessions doesn't matter in your use case, simply update the session configuration as normal and skip this package.
+
 ### Testing
 
 ```bash
