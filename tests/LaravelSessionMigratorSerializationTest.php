@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Krisell\LaravelSessionMigrator\LaravelSessionMigratorServiceProvider;
 use Orchestra\Testbench\TestCase;
+use Illuminate\Support\Arr;
 
 class LaravelSessionMigratorSerializationTest extends TestCase
 {
@@ -85,27 +86,21 @@ class LaravelSessionMigratorSerializationTest extends TestCase
     {
         Route::middleware('web')->get('/correct', function () {
             $this->assertTrue(session('php'));
-            session(['performed' => 'correct']);
         });
 
         $this->withCookies([
             'laravel_session' => ($name = Str::random(40)),
             $name => $this->sessionData(['php' => true], 'php'),
-        ])->get('/correct');
-
-        $this->assertEquals('correct', session('performed'));
+        ])->get('/correct')->assertOk();
 
         Route::middleware('web')->get('/incorrect', function () {
             $this->assertNull(session('json'));
-            session(['performed' => 'incorrect']);
         });
 
         $this->withCookies([
             'laravel_session' => ($name = Str::random(40)),
             $name => $this->sessionData(['json' => true], 'json'),
-        ])->get('/incorrect');
-
-        $this->assertEquals('incorrect', session('performed'));
+        ])->get('/incorrect')->assertOk();
     }
 
     /** @test */
@@ -115,27 +110,21 @@ class LaravelSessionMigratorSerializationTest extends TestCase
 
         Route::middleware('web')->get('/correct', function () {
             $this->assertTrue(session('json'));
-            session(['performed' => 'correct']);
         });
 
         $this->withCookies([
             'laravel_session' => ($name = Str::random(40)),
             $name => $this->sessionData(['json' => true], 'json'),
-        ])->get('/correct');
-
-        $this->assertEquals('correct', session('performed'));
+        ])->get('/correct')->assertOk();
 
         Route::middleware('web')->get('/incorrect', function () {
             $this->assertNull(session('php'));
-            session(['performed' => 'incorrect']);
         });
 
         $this->withCookies([
             'laravel_session' => ($name = Str::random(40)),
             $name => $this->sessionData(['php' => true], 'php'),
-        ])->get('/incorrect');
-
-        $this->assertEquals('incorrect', session('performed'));
+        ])->get('/incorrect')->assertOk();
     }
 
     /** @test */
@@ -148,15 +137,12 @@ class LaravelSessionMigratorSerializationTest extends TestCase
 
         Route::middleware('web')->get('/correct', function () {
             $this->assertTrue(session('php'));
-            session(['performed' => 'correct']);
         });
 
         $this->withCookies([
             'laravel_session' => ($name = Str::random(40)),
             $name => $this->sessionData(['php' => true], 'php'),
-        ])->get('/correct');
-
-        $this->assertEquals('correct', session('performed'));
+        ])->get('/correct')->assertOk();
     }
 
     /** @test */
@@ -169,14 +155,81 @@ class LaravelSessionMigratorSerializationTest extends TestCase
 
         Route::middleware('web')->get('/correct', function () {
             $this->assertTrue(session('json'));
-            session(['performed' => 'correct']);
         });
 
         $this->withCookies([
             'laravel_session' => ($name = Str::random(40)),
             $name => $this->sessionData(['json' => true], 'json'),
-        ])->get('/correct');
+        ])->get('/correct')->assertOk();
+    }
 
-        $this->assertEquals('correct', session('performed'));
+    /** @test */
+    public function the_migrator_store_defaults_to_empty_array_for_invalid_data()
+    {
+        config([
+            'session.serialization' => 'php',
+            'session.migrate.serialization' => true,
+        ]);
+
+        Route::middleware('web')->get('/correct', function () {
+            $this->assertEquals([], Arr::except(session()->all(), '_token'));
+        });
+
+        $this->withCookies([
+            'laravel_session' => ($name = Str::random(40)),
+            $name => 'invalid-data',
+        ])->get('/correct')->assertOk();
+    }
+
+    /** @test */
+    public function sessions_can_still_be_encrypted_with_migration_activated()
+    {
+        config([
+            'session.migrate.serialization' => true,
+            'session.encrypt' => true
+        ]);
+        
+        Route::middleware('web')->get('/session', function () {
+            return session()->all();
+        });
+
+        $encrypter = session()->driver()->getEncrypter();
+
+        $data = json_encode([
+            'data' => $encrypter->encrypt(serialize(['php' => true])),
+            'expires' => time() + 100,
+        ]);
+
+        $this->withCookies([
+            'laravel_session' => ($name = Str::random(40)),
+            $name => $data,
+        ])->get('/session')->assertOk();
+
+        $this->assertTrue(json_decode($this->get('/session')->getContent())->php);
+    }
+
+    /** @test */
+    public function invalid_decryption_defaults_to_empty_array()
+    {
+        config([
+            'session.migrate.serialization' => true,
+            'session.encrypt' => true
+        ]);
+        
+        Route::middleware('web')->get('/session', function () {
+            return session()->all();
+        });
+
+        $encrypter = session()->driver()->getEncrypter();
+
+        $data = json_encode([
+            'data' => 'invalid',
+            'expires' => time() + 100,
+        ]);
+
+        $this->withCookies([
+            'laravel_session' => ($name = Str::random(40)),
+            $name => $data,
+        ])->get('/session')->assertOk();
     }
 }
