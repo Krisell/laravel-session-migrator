@@ -19,7 +19,7 @@ composer require krisell/laravel-session-migrator
 This package allows production applications to update some of the session configuration without dropping
 any active sessions and signing users out. More specifically, two session configuration options can be migrated:
 
-1.  Serilization method (`php` or `json`).
+1.  Serialization method (`php` or `json`).
 
     Laravel 9 introduced the option to serialize session data using `json` rather than php's `serialize`, and might
     be preferred both from a security perspective and performance-wise. The method is changed by specifying
