@@ -19,17 +19,24 @@ class LaravelSessionMigratorManager extends SessionManager
             return parent::buildSession($handler);
         }
 
-        $arguments = [
+        if ($this->config->get('session.encrypt')) {
+            return new LaravelEncryptedSessionMigratorStore(
+                $this->config->get('session.cookie'),
+                $handler,
+                $this->container['encrypter'],
+                $id = null,
+                $this->config->get('session.serialization', 'php'),
+                $previousHandler,
+            );
+        }
+
+        return new LaravelSessionMigratorStore(
             $this->config->get('session.cookie'),
             $handler,
             $id = null,
             $this->config->get('session.serialization', 'php'),
             $previousHandler,
-        ];
-
-        return $this->config->get('session.encrypt')
-            ? new LaravelEncryptedSessionMigratorStore(...$arguments)
-            : new LaravelSessionMigratorStore(...$arguments);
+        );
     }
 
     private function getPreviousHandler()
