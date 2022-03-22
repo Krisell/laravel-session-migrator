@@ -8,8 +8,6 @@ Migration Laravel session driver or serialization method in production without d
 
 ## Installation
 
-You can install the package via composer:
-
 ```bash
 composer require krisell/laravel-session-migrator
 ```
