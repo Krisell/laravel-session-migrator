@@ -37,7 +37,7 @@ any active sessions and signing users out. More specifically, two session config
 
 ## Usage
 
-Installing the package intentionally doesn't activate any of the migration feature. In order to perform a migration,
+Installing the package intentionally doesn't activate any of the migration features. In order to perform a migration,
 update the session configuration to the new wanted settings, and then also perform one of the following:
 
 - Add the following entry to your `config/session.php` file:
@@ -55,6 +55,9 @@ update the session configuration to the new wanted settings, and then also perfo
 SESSION_MIGRATE_SERIALIZATION=true
 SESSION_MIGRATE_DRIVER=file
 ```
+
+You can of course choose to only use the serialization migration, or only the driver migration. It should be very
+rare that one need to migrate both these at the same time, although that is also supported.
 
 Note specifically that `migrate.driver` is the driver you are migrating _from_, i.e. the previously used driver. The
 new driver or serialization method is configured just as normal, in the config file or environment variables.
