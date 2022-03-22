@@ -1,23 +1,48 @@
 <?php
 
-namespace App;
+namespace Krisell\LaravelSessionMigrator;
 
-class Store extends \Illuminate\Session\Store
+use SessionHandlerInterface;
+use Illuminate\Session\Store;
+
+class LaravelSessionMigratorStore extends Store
 {
+    protected $previousHandler;
+    
+    public function __construct($name, SessionHandlerInterface $handler, $id = null, $serialization = 'php', $previousHandler = null)
+    {
+        parent::__construct($name, $handler, $id, $serialization);
+
+        $this->previousHandler = $previousHandler;
+    }
+
     protected function readFromHandler()
     {
-        // Attempt reading from session using the chosen serialization method
-        $data = parent::readFromHandler();
-        if ($data !== []) {
-            return $data;
+        $methods = [[$this->handler, $this->serialization]];
+
+        if ($this->previousHandler) {
+            $methods[] = [$this->previousHandler, $this->serialization];
         }
 
-        // Switch to the other serialization method to see if session data is decodeable that way
-        $chosenSerialization = $this->serialization;
-        $this->serialization = ($chosenSerialization === 'json') ? 'php' : 'json';
+        if (config('session.migrate.serialization')) {
+            foreach ($methods as [$handler]) {
+                $methods[] = [$handler, ($this->serialization === 'php') ? 'json' : 'php'];
+            }
+        }
 
-        // Returned decoded data (if any) and revert to chosen serialization method to ensure
-        // that is used for further reads and when saving the session data.
-        return tap(parent::readFromHandler(), fn () => $this->serialization = $chosenSerialization);
+        // Attempt to read session data using all candidate handlers and serializations and 
+        // return data on first successful read.
+        foreach ($methods as [$handler, $serialization]) {
+            if ($data = $handler->read($this->getId())) {
+                $prepared = $this->prepareForUnserialize($data);
+                $data = ($serialization === 'json') ? json_decode($prepared, true) : @unserialize($prepared);
+    
+                if ($data !== false && is_array($data)) {
+                    return $data;
+                }
+            }
+        }
+
+        return [];
     }
 }

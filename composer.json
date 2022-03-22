@@ -1,6 +1,6 @@
 {
   "name": "krisell/laravel-session-migrator",
-  "description": "Migrate Laravel session driver or serialization method without losing any sessions",
+  "description": "Migrate Laravel session serialization method and driver without dropping any sessions.",
   "keywords": [
     "krisell",
     "laravel-session-migrator"
