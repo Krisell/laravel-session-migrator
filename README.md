@@ -25,7 +25,7 @@ any active sessions and signing users out. More specifically, two session config
     active sessions to be invalidated and users to be signed out. With this package, this setting can be migrated
     transparently to users.
 
-2.  Session driver migration (from `file` or `cookie`)
+2.  Session driver (from `file` or `cookie`)
 
     This package also allows to define a driver being migrated from, such that a new driver can be used without dropping
     any session data (technically, the old driver is used as a fallback `read` source, but all `writes` are performed
