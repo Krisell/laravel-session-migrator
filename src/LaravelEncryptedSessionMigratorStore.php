@@ -4,8 +4,8 @@ namespace Krisell\LaravelSessionMigrator;
 
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Encryption\Encrypter as EncrypterContract;
-use SessionHandlerInterface;
 use Krisell\LaravelSessionMigrator\LaravelSessionMigratorStore;
+use SessionHandlerInterface;
 
 class LaravelEncryptedSessionMigratorStore extends LaravelSessionMigratorStore
 {

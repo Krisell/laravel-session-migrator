@@ -4,11 +4,11 @@ namespace Krisell\LarvelSessionMigrator\Tests;
 
 use Illuminate\Cookie\CookieValuePrefix;
 use Illuminate\Encryption\Encrypter;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Krisell\LaravelSessionMigrator\LaravelSessionMigratorServiceProvider;
 use Orchestra\Testbench\TestCase;
-use Illuminate\Support\Arr;
 
 class LaravelSessionMigratorSerializationTest extends TestCase
 {
@@ -186,9 +186,9 @@ class LaravelSessionMigratorSerializationTest extends TestCase
     {
         config([
             'session.migrate.serialization' => true,
-            'session.encrypt' => true
+            'session.encrypt' => true,
         ]);
-        
+
         Route::middleware('web')->get('/session', function () {
             return session()->all();
         });
@@ -213,9 +213,9 @@ class LaravelSessionMigratorSerializationTest extends TestCase
     {
         config([
             'session.migrate.serialization' => true,
-            'session.encrypt' => true
+            'session.encrypt' => true,
         ]);
-        
+
         Route::middleware('web')->get('/session', function () {
             return session()->all();
         });
