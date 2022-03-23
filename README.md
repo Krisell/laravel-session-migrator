@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/krisell/laravel-session-migrator.svg?style=flat-square)](https://packagist.org/packages/krisell/laravel-session-migrator)
 ![GitHub Actions](https://github.com/krisell/laravel-session-migrator/actions/workflows/main.yml/badge.svg)
 
-Migration Laravel session driver or serialization method in production without dropping any sessions.
+Migrate Laravel session driver or serialization method in production without dropping sessions.
 
 ## Installation
 
